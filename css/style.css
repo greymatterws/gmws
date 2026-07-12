@@ -119,9 +119,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   margin-bottom: 48px;
 }
 .nav-drawer-top .nav-drawer-logo-img {
-  width: 192px;
+  width: 230px;
   height: auto;
-  mix-blend-mode: screen;
 }
 .nav-drawer-close {
   position: absolute;
@@ -411,7 +410,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   gap: 32px;
   padding-bottom: 40px;
 }
-.footer-logo { width: 192px; height: auto; margin-bottom: 16px; mix-blend-mode: screen; }
+.footer-logo { width: 230px; height: auto; margin-bottom: 16px; }
 .footer-brand p { font-size: 13px; margin-bottom: 8px; }
 .footer-social { display: flex; gap: 12px; margin: 16px 0; }
 .footer-social a {
