@@ -133,3 +133,24 @@ setupAccordion('possible-accordion', '.accordion-item', '.accordion-trigger', '.
   if (closeBtn) closeBtn.addEventListener('click', close);
   overlay.addEventListener('click', close);
 })();
+
+// About page contact form -> opens a pre-filled email to info@greymatterws.com
+(function () {
+  var form = document.getElementById('contact-form');
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = form.elements['name'].value.trim();
+    var email = form.elements['email'].value.trim();
+    var message = form.elements['message'].value.trim();
+
+    var subject = 'New inquiry from ' + name;
+    var body = 'Name: ' + name + '\nEmail: ' + email + '\n\n' + message;
+    var mailto = 'mailto:info@greymatterws.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+
+    window.location.href = mailto;
+  });
+})();
