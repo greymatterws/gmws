@@ -71,7 +71,8 @@
     flex-direction: column;
     align-items: center;
   }
-  .logo { width: min(232px, 62vw); height: auto; display: block; margin-bottom: 48px; }
+  /* Own, permanent layer so the logo isn't re-rasterized when buttons animate */
+  .logo { width: min(232px, 62vw); height: auto; display: block; margin-bottom: 48px; transform: translateZ(0); backface-visibility: hidden; }
 
   nav { width: 100%; max-width: 252px; display: grid; gap: 20px; }
   .btn {
@@ -89,6 +90,7 @@
     letter-spacing: .04em;
     box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 10px 24px -16px rgba(0,0,0,.75);
     transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    will-change: transform;
   }
   .btn span { text-align: center; padding-top: 2px; }
   .btn svg { width: 15px; height: 15px; stroke: var(--steel); fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s ease, transform .2s ease; }
@@ -126,12 +128,12 @@
   <main>
     <img class="logo" src="assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
     <nav aria-label="Client portal">
-      <a class="btn" href="#">
+      <a class="btn" href="https://app.altruist.com/login/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><path d="M4 16l5-5 4 3 7-8"/><path d="M15 6h5v5"/></svg>
         <span>Investments</span>
         <i aria-hidden="true"></i>
       </a>
-      <a class="btn" href="#">
+      <a class="btn" href="https://fs.greymatterws.com/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg>
         <span>Documents</span>
         <i aria-hidden="true"></i>
