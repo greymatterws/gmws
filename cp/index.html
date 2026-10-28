@@ -74,6 +74,8 @@
   /* Own, permanent layer so the logo isn't re-rasterized when buttons animate */
   .logo { width: min(232px, 62vw); height: auto; display: block; margin-bottom: 48px; transform: translateZ(0); backface-visibility: hidden; }
 
+  .logo-link { display: block; }
+
   nav { width: 100%; max-width: 252px; display: grid; gap: 20px; }
   .btn {
     display: grid;
@@ -126,7 +128,9 @@
 <body>
   <div class="field" aria-hidden="true"></div>
   <main>
-    <img class="logo" src="assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
+    <a class="logo-link" href="https://greymatterws.com">
+      <img class="logo" src="assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
+    </a>
     <nav aria-label="Client portal">
       <a class="btn" href="https://app.altruist.com/login/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><path d="M4 16l5-5 4 3 7-8"/><path d="M15 6h5v5"/></svg>
