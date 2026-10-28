@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Client Portal · Grey Matter Wealth Strategies</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F161F">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0F161F;
+    --ink-deep: #090E14;
+    --ink-lift: #18222E;
+    --white: #FFFFFF;
+    --paper: #C7C7C5;
+    --paper-hover: #D3D3D1;
+    --steel: #5B6573;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background:
+      radial-gradient(120% 90% at 50% 38%, var(--ink-lift) 0%, var(--ink) 48%, var(--ink-deep) 100%);
+    color: var(--white);
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    justify-items: center;
+    padding: max(48px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* The halftone diamond from the mark, enlarged into a single quiet shape */
+  .field {
+    position: fixed;
+    pointer-events: none;
+    width: min(132vh, 1150px);
+    aspect-ratio: 1;
+    right: -24vh;
+    top: 50%;
+    transform: translateY(-50%);
+    background: url("assets/halftone-diamond.svg") center / contain no-repeat;
+    opacity: .075;
+    animation: settle 1.8s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes settle {
+    from { opacity: 0; transform: translateY(-50%) scale(1.04); }
+    to   { opacity: .075; transform: translateY(-50%) scale(1); }
+  }
+  @media (max-width: 760px) {
+    .field { width: 150vw; right: -62vw; top: 4%; transform: none; animation-name: settle-m; }
+    @keyframes settle-m { from { opacity: 0; } to { opacity: .075; } }
+  }
+
+  main {
+    align-self: center;
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .logo { width: min(232px, 62vw); height: auto; display: block; margin-bottom: 48px; }
+
+  nav { width: 100%; max-width: 252px; display: grid; gap: 20px; }
+  .btn {
+    display: grid;
+    grid-template-columns: 16px 1fr 16px;
+    align-items: center;
+    height: 46px;
+    padding: 0 16px;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 19px;
+    line-height: 1;
+    letter-spacing: .04em;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 10px 24px -16px rgba(0,0,0,.75);
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .btn span { text-align: center; padding-top: 2px; }
+  .btn svg { width: 15px; height: 15px; stroke: var(--steel); fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s ease, transform .2s ease; }
+  .btn:hover { background: var(--paper-hover); transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 14px 28px -16px rgba(0,0,0,.8); }
+  .btn:hover svg { stroke: var(--ink); }
+  .btn:active { transform: translateY(0); }
+  .btn:focus-visible { outline: 1.5px solid var(--white); outline-offset: 5px; }
+
+  footer {
+    position: relative;
+    max-width: 620px;
+    margin-top: 48px;
+    text-align: center;
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size: 11.5px;
+    line-height: 1.65;
+    letter-spacing: .01em;
+    color: rgba(236, 234, 231, .46);
+  }
+  footer p + p { margin-top: 6px; }
+
+  @media (max-width: 420px) {
+    footer { font-size: 11px; margin-top: 40px; }
+    .logo { margin-bottom: 42px; }
+    .btn { height: 46px; font-size: 18px; padding: 0 15px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .field { animation: none; }
+    .btn, .btn svg { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="field" aria-hidden="true"></div>
+  <main>
+    <img class="logo" src="assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
+    <nav aria-label="Client portal">
+      <a class="btn" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18"/><path d="M4 16l5-5 4 3 7-8"/><path d="M15 6h5v5"/></svg>
+        <span>Investments</span>
+        <i aria-hidden="true"></i>
+      </a>
+      <a class="btn" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg>
+        <span>Documents</span>
+        <i aria-hidden="true"></i>
+      </a>
+    </nav>
+  </main>
+  <footer>
+    <p>Investment advisory services are offered through GM Wealth Strategies LLC, d/b/a Grey Matter Wealth Strategies, a registered investment adviser. Registration does not imply a certain level of skill or training.</p>
+    <p>Brokerage and custody services are provided by Altruist Financial LLC, member FINRA/SIPC, which is not affiliated with Grey Matter Wealth Strategies. Investments opens Altruist’s secure website; Documents opens our secure client file portal.</p>
+    <p>© 2026 GM Wealth Strategies LLC. All rights reserved.</p>
+  </footer>
+</body>
+</html>
