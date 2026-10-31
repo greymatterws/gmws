@@ -103,8 +103,27 @@ setupAccordion('possible-accordion', '.accordion-item', '.accordion-trigger', '.
     });
   });
 
-  if (tabs.length) activate(tabs[0]);
+  // Download every tab photo now so it doesn't pop in mid-animation on first click
+  tabs.forEach(function (t) {
+    var s = t.getAttribute('data-image');
+    if (s) new Image().src = s;
+  });
+
+  // If the HTML already marks a tab as open, leave its panel alone (re-opening it
+  // would lock it to a fixed height) and just fill in the caption.
+  var startTab = tabs.filter(function (t) { return t.classList.contains('is-active'); })[0];
+  if (startTab) {
+    var startDesc = startTab.querySelector('.service-desc');
+    if (desc && startDesc) desc.textContent = startDesc.textContent;
+  } else if (tabs.length) {
+    activate(tabs[0]);
+  }
 })();
+
+// Turn animations back on once the page has fully loaded (see .preload in style.css)
+window.addEventListener('load', function () {
+  document.documentElement.classList.remove('preload');
+});
 
 // Nav drawer (slide-in from left), MENU button opens it on both mobile and desktop
 (function () {
