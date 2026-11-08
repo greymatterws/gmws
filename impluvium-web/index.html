@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Impluvium · Grey Matter Wealth Strategies</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#D7D6D3">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #D7D6D3;      /* logo background, greyish white */
+    --ground-lift: #E1E0DD;
+    --ground-deep: #CBCAC6;
+    --surface: #E4E3E0;     /* chat card */
+    --surface-2: #DCDBD8;
+    --ink: #0F161F;         /* logo navy */
+    --ink-lift: #18222E;
+    --steel: #5B6573;
+    --muted: #565B62;       /* small text, 4.5:1+ on ground */
+    --hair: rgba(15, 22, 31, .14);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: radial-gradient(120% 90% at 50% 38%, var(--ground-lift) 0%, var(--ground) 48%, var(--ground-deep) 100%);
+    color: var(--ink);
+    font-family: var(--serif);
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    justify-items: center;
+    gap: 40px;
+    padding: max(44px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* GMWS halftone diamond, enlarged into one quiet shape — ink on light */
+  .field {
+    position: fixed;
+    pointer-events: none;
+    width: min(132vh, 1150px);
+    aspect-ratio: 1;
+    right: -24vh;
+    top: 50%;
+    transform: translateY(-50%);
+    background: url("assets/halftone-diamond.svg") center / contain no-repeat;
+    opacity: .085;
+    animation: settle 1.8s cubic-bezier(.2,.7,.2,1) both;
+    z-index: 0;
+  }
+  @keyframes settle {
+    from { opacity: 0; transform: translateY(-50%) scale(1.04); }
+    to   { opacity: .085; transform: translateY(-50%) scale(1); }
+  }
+  @media (max-width: 760px) {
+    .field { width: 150vw; right: -62vw; top: 4%; transform: none; animation-name: settle-m; }
+    @keyframes settle-m { from { opacity: 0; } to { opacity: .085; } }
+  }
+
+  header, main, footer { position: relative; z-index: 1; }
+
+  /* ---------- Lockup ---------- */
+  .lockup {
+    display: flex;
+    align-items: center;
+    gap: 19px;
+    color: var(--ink);
+    text-decoration: none;
+    transform: translateZ(0);
+  }
+  .lockup img { width: 96px; height: 96px; display: block; }
+  .lockup .words { display: flex; flex-direction: column; }
+  .lockup .name { font-size: 48px; line-height: .96; letter-spacing: .01em; white-space: nowrap; }
+  .lockup .rule { height: 1px; background: var(--ink); margin: 8px 0 7px; }
+  .lockup .sub { font-size: 10px; line-height: 1; letter-spacing: .08em; margin-right: -.08em; white-space: nowrap; }
+  .lockup:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 8px; }
+
+  /* ---------- Chat ---------- */
+  main {
+    width: 100%;
+    max-width: 760px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-height: 420px;
+    max-height: 680px;
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.55) inset, 0 24px 48px -32px rgba(15,22,31,.45);
+  }
+  .chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px 13px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .chat-head h1 { font-weight: 400; font-size: 21px; line-height: 1; letter-spacing: .02em; padding-top: 2px; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--sans); font-size: 12px; letter-spacing: .02em; color: var(--muted);
+  }
+  .status i { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--steel); display: block; }
+  .new-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    height: 32px; padding: 0 12px;
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--hair); border-radius: 2px;
+    font-family: var(--serif); font-size: 16px; letter-spacing: .03em; cursor: pointer;
+    transition: background-color .2s ease, border-color .2s ease;
+  }
+  .new-btn svg { width: 13px; height: 13px; stroke: var(--steel); fill: none; stroke-width: 1.3; stroke-linecap: round; }
+  .new-btn:hover { background: var(--surface-2); border-color: rgba(15,22,31,.24); }
+  .new-btn:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+  .head-right { display: flex; align-items: center; gap: 16px; }
+
+  .thread {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 26px 20px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    scroll-behavior: smooth;
+  }
+  .msg { max-width: 86%; }
+  .msg .who {
+    font-family: var(--serif); font-size: 13px; letter-spacing: .14em; color: var(--steel);
+    margin-bottom: 7px; display: flex; align-items: center; gap: 8px;
+  }
+  .msg .body { font-family: var(--sans); font-size: 15px; line-height: 1.6; color: #1B222B; }
+  .msg .body p + p { margin-top: 10px; }
+  .msg.you { align-self: flex-end; }
+  .msg.you .who { justify-content: flex-end; }
+  .msg.you .body {
+    background: var(--ink); color: #ECEAE7;
+    padding: 11px 15px; border-radius: 2px;
+  }
+  .typing { display: inline-flex; gap: 5px; padding: 6px 0; }
+  .typing span { width: 5px; height: 5px; border-radius: 50%; background: var(--steel); opacity: .35; animation: blink 1.2s infinite ease-in-out; }
+  .typing span:nth-child(2) { animation-delay: .15s; }
+  .typing span:nth-child(3) { animation-delay: .3s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: .9; } }
+
+  .suggest {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    padding: 6px 20px 16px;
+  }
+  .chip {
+    display: inline-flex; align-items: center;
+    min-height: 36px; padding: 0 14px;
+    background: var(--ground); color: var(--ink);
+    border: 1px solid var(--hair); border-radius: 2px;
+    font-family: var(--serif); font-size: 16.5px; line-height: 1; letter-spacing: .03em;
+    cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .chip span { padding-top: 2px; }
+  .chip:hover { background: #CFCECB; border-color: rgba(15,22,31,.22); transform: translateY(-1px); }
+  .chip:active { transform: translateY(0); }
+  .chip:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+
+  .composer {
+    display: grid;
+    grid-template-columns: 1fr 44px;
+    align-items: end;
+    gap: 10px;
+    margin: 0 14px 14px;
+    padding: 8px 8px 8px 14px;
+    background: #ECEBE8;
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .composer:focus-within { border-color: rgba(15,22,31,.38); box-shadow: 0 0 0 3px rgba(15,22,31,.06); }
+  .composer label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .composer textarea {
+    resize: none; border: 0; outline: 0; background: transparent;
+    font-family: var(--sans); font-size: 15px; line-height: 1.55; color: var(--ink);
+    padding: 9px 0; max-height: 168px; min-height: 42px;
+  }
+  .composer textarea::placeholder { color: #6A6F76; }
+  .send {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    background: var(--ink); border: 0; border-radius: 2px; cursor: pointer;
+    transition: background-color .2s ease, opacity .2s ease;
+  }
+  .send svg { width: 17px; height: 17px; stroke: #ECEAE7; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .send:hover { background: var(--ink-lift); }
+  .send:disabled { opacity: .35; cursor: default; }
+  .send:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+  .hint { font-family: var(--sans); font-size: 11.5px; color: var(--muted); padding: 0 20px 14px; margin-top: -4px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    max-width: 680px;
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    line-height: 1.65;
+    letter-spacing: .01em;
+    color: var(--muted);
+  }
+  footer p + p { margin-top: 6px; }
+
+  @media (max-width: 560px) {
+    body { gap: 28px; padding-left: 14px; padding-right: 14px; }
+    .lockup { gap: 14px; }
+    .lockup img { width: 76px; height: 76px; }
+    .lockup .name { font-size: 38px; }
+    .lockup .rule { margin: 6px 0 6px; }
+    .lockup .sub { font-size: 8px; }
+    main { max-height: none; min-height: 62vh; }
+    .msg { max-width: 94%; }
+    .status, .hint { display: none; }
+    .composer { margin-bottom: 12px; }
+    footer { font-size: 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .field { animation: none; }
+    .chip, .send, .new-btn { transition: none; }
+    .typing span { animation: none; opacity: .6; }
+    .thread { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="field" aria-hidden="true"></div>
+
+  <header>
+    <a class="lockup" href="./" aria-label="Impluvium, Grey Matter Wealth Strategies Tax Advisor">
+      <img src="assets/impluvium-mark.svg" width="96" height="96" alt="">
+      <span class="words" aria-hidden="true">
+        <span class="name">IMPLUVIUM</span>
+        <span class="rule"></span>
+        <span class="sub">GREY MATTER WEALTH STRATEGIES TAX ADVISOR</span>
+      </span>
+    </a>
+  </header>
+
+  <main aria-label="Impluvium conversation">
+    <div class="chat-head">
+      <h1>New conversation</h1>
+      <div class="head-right">
+        <span class="status"><i aria-hidden="true"></i>Preview · not connected</span>
+        <button class="new-btn" type="button" id="reset">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>New</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="thread" id="thread" role="log" aria-live="polite">
+      <div class="msg">
+        <div class="who">IMPLUVIUM</div>
+        <div class="body">
+          <p>Good to see you. Pick a household, ask about a tax position, or run a quick calculation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="suggest" id="suggest">
+      <button class="chip" type="button"><span>Open a household</span></button>
+      <button class="chip" type="button"><span>Quick calc</span></button>
+      <button class="chip" type="button"><span>Run a full plan</span></button>
+      <button class="chip" type="button"><span>Compare years</span></button>
+    </div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <label for="prompt">Message Impluvium</label>
+      <textarea id="prompt" rows="1" placeholder="Message Impluvium…"></textarea>
+      <button class="send" type="submit" id="send" aria-label="Send" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+    <p class="hint">Enter to send · Shift + Enter for a new line</p>
+  </main>
+
+  <footer>
+    <p>Impluvium™ is a trademark of GM Wealth Strategies LLC, d/b/a Grey Matter Wealth Strategies. All other marks belong to their respective owners.</p>
+    <p>Impluvium provides general information and calculations for discussion purposes only. It is not tax, legal, accounting or investment advice, and using it does not create an advisory or client relationship. Results depend on the information entered and on tax law as of the date shown, both of which can change. Consult a qualified tax professional about your own situation before acting on any result.</p>
+    <p>© 2026 GM Wealth Strategies LLC. All rights reserved.</p>
+  </footer>
+
+<script>
+(() => {
+  const thread = document.getElementById('thread');
+  const form = document.getElementById('composer');
+  const input = document.getElementById('prompt');
+  const send = document.getElementById('send');
+  const suggest = document.getElementById('suggest');
+  const reset = document.getElementById('reset');
+  const firstMsg = thread.innerHTML;
+
+  const grow = () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 168) + 'px';
+    send.disabled = !input.value.trim();
+  };
+
+  const add = (who, text) => {
+    const m = document.createElement('div');
+    m.className = 'msg' + (who === 'you' ? ' you' : '');
+    const w = document.createElement('div');
+    w.className = 'who';
+    if (who === 'you') { w.textContent = 'YOU'; }
+    else { w.textContent = 'IMPLUVIUM'; }
+    const b = document.createElement('div');
+    b.className = 'body';
+    if (text === null) {
+      b.innerHTML = '<span class="typing" aria-label="Impluvium is typing"><span></span><span></span><span></span></span>';
+    } else {
+      text.split('\n').forEach(line => { const p = document.createElement('p'); p.textContent = line; b.append(p); });
+    }
+    m.append(w, b);
+    thread.append(m);
+    thread.scrollTop = thread.scrollHeight;
+    return b;
+  };
+
+  const reply = () => {
+    const b = add('impluvium', null);
+    setTimeout(() => {
+      b.innerHTML = '';
+      const p = document.createElement('p');
+      p.textContent = 'This is a preview of the Impluvium interface. It isn’t connected to the tax engine yet, so there’s no answer to show.';
+      b.append(p);
+      thread.scrollTop = thread.scrollHeight;
+    }, 900);
+  };
+
+  const submit = () => {
+    const text = input.value.trim();
+    if (!text) return;
+    add('you', text);
+    input.value = '';
+    grow();
+    suggest.hidden = true;
+    reply();
+  };
+
+  form.addEventListener('submit', e => { e.preventDefault(); submit(); });
+  input.addEventListener('input', grow);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); submit(); }
+  });
+  suggest.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    input.value = chip.textContent.trim();
+    grow();
+    input.focus();
+  });
+  reset.addEventListener('click', () => {
+    thread.innerHTML = firstMsg;
+    suggest.hidden = false;
+    input.value = '';
+    grow();
+    input.focus();
+  });
+})();
+</script>
+</body>
+</html>
