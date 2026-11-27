@@ -7,9 +7,9 @@
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0F161F">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="/cp/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/cp/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/cp/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
@@ -77,7 +77,7 @@
     right: -24vh;
     top: 50%;
     transform: translateY(-50%);
-    background: url("assets/halftone-diamond.svg") center / contain no-repeat;
+    background: url("/cp/assets/halftone-diamond.svg") center / contain no-repeat;
     opacity: .075;
     animation: settle 1.8s cubic-bezier(.2,.7,.2,1) both;
   }
@@ -123,7 +123,7 @@
     align-items: center;
     padding: 36px 0 12px;
   }
-  .wordmark { width: min(132px, 40vw); height: auto; display: block; margin: 0 0 30px; opacity: .92; transform: translateZ(0); backface-visibility: hidden; }
+  .wordmark { font-size: min(29px, 8.8vw); line-height: 1; letter-spacing: .06em; padding-left: .06em; color: rgba(255,255,255,.92); margin: 0 0 30px; }
 
   /* Hairline with a small diamond, tying the GMWS mark to INTERLINK */
   .rule {
@@ -272,10 +272,10 @@
 
   <main>
     <a class="logo-link" href="https://greymatterws.com">
-      <img class="logo" src="assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
+      <img class="logo" src="/cp/assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
     </a>
     <div class="rule" aria-hidden="true"><i></i></div>
-    <img class="wordmark" src="assets/interlink-wordmark.svg" width="4515" height="864" alt="Interlink">
+    <div class="wordmark" role="img" aria-label="Interlink">INTERLINK</div>
 
     <p class="sub">Your secure document portal at GMWS.</p>
 
