@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tesseract · Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: quiet, exact, private-office; few hues, fine detail, air.
+IDEA: the GMWS halftone diamond is the seed; its dots break loose and rebuild as a four-dimensional cube.
+PICTURE: one canvas: diamond → atoms → rotating tesseract, ink dots on the Impluvium ground.
+COLOUR and TYPE: ground #D7D6D3, ink #0F161F, steel #5B6573; Instrument Serif for the lockup and button, system sans for fields.
+LAYOUT: lockup on top, sign-in card in the centre, the animation floating right as on the client portal; stacks behind on phones.
+*/
+:root{
+  color-scheme: light;
+  --ground: #D7D6D3;
+  --ground-lift: #E1E0DD;
+  --ground-deep: #CBCAC6;
+  --surface: #E4E3E0;
+  --field: #ECEBE8;
+  --ink: #0F161F;
+  --btn: #C7C7C5;
+  --btn-ink: #0F161F;
+  --btn-hover: #D3D3D1;
+  --steel: #5B6573;
+  --muted: #565B62;
+  --hair: rgba(15,22,31,.14);
+  --inset: rgba(255,255,255,.55);
+  --focus: rgba(15,22,31,.42);
+  --focus-ring: rgba(15,22,31,.07);
+  --ph: #71767D;
+  --err: #7A2E2E;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+}
+/* Dark: the GMWS navy version */
+:root[data-mode=dark]{
+  color-scheme: dark;
+  --ground: #0F161F;
+  --ground-lift: #18222E;
+  --ground-deep: #090E14;
+  --surface: #141C26;
+  --field: #0C121A;
+  --ink: #ECEAE7;
+  --btn: #C7C7C5;
+  --btn-ink: #0F161F;
+  --btn-hover: #D3D3D1;
+  --steel: #8F98A4;
+  --muted: #A3A9B1;
+  --hair: rgba(236,234,231,.12);
+  --inset: rgba(255,255,255,.04);
+  --focus: rgba(236,234,231,.4);
+  --focus-ring: rgba(236,234,231,.06);
+  --ph: #7D848D;
+  --err: #E3A7A7;
+}
+body,.card,.input,.go{transition:background-color .35s ease, color .35s ease, border-color .35s ease}
+
+/* Mode switch, upper right */
+.mode{
+  position:fixed;z-index:2;top:14px;right:14px;
+  display:inline-flex;align-items:center;gap:9px;
+  min-height:44px;padding:0 6px;border:0;background:none;cursor:pointer;
+  font:13px var(--sans);letter-spacing:.01em;color:var(--muted);
+}
+.mode .track{
+  position:relative;width:46px;height:26px;border-radius:13px;
+  background:var(--surface);border:1px solid var(--hair);
+  transition:background-color .3s ease,border-color .3s ease;
+}
+.mode .knob{
+  position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--ink);display:grid;place-items:center;
+  transition:transform .3s cubic-bezier(.3,.7,.2,1), background-color .3s ease;
+}
+.mode .knob svg{width:12px;height:12px;fill:none;stroke:var(--ground);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.mode .moon{display:none}
+.mode[aria-checked=true] .knob{transform:translateX(20px)}
+.mode[aria-checked=true] .sun{display:none}
+.mode[aria-checked=true] .moon{display:block}
+.mode:hover{color:var(--ink)}
+.mode:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px;border-radius:2px}
+*{box-sizing:border-box;min-width:0;margin:0;padding:0}
+html,body{height:100%}
+body{
+  min-height:100vh;min-height:100dvh;
+  background:radial-gradient(120% 90% at 50% 38%, var(--ground-lift) 0%, var(--ground) 48%, var(--ground-deep) 100%);
+  color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:antialiased;
+  display:grid;grid-template-rows:auto 1fr auto;justify-items:center;gap:32px;
+  padding:44px 24px 26px;position:relative;overflow:hidden;
+}
+canvas#tess{
+  position:fixed;pointer-events:none;z-index:0;
+  width:min(100vh,900px);aspect-ratio:1;
+  right:max(-10vh,-90px);top:50%;transform:translateY(-50%);
+}
+header,main,footer{position:relative;z-index:1}
+
+.lockup{display:inline-flex;flex-direction:column;color:var(--ink);text-decoration:none}
+.lockup .name{font-size:48px;line-height:.96;letter-spacing:.01em;white-space:nowrap}
+.lockup .rule{height:1px;background:var(--ink);margin:8px 0 7px}
+.lockup .sub{font-size:12.4px;line-height:1;letter-spacing:.12em;margin-right:-.12em;white-space:nowrap}
+.lockup:focus-visible{outline:1.5px solid var(--ink);outline-offset:8px}
+
+main{align-self:center;width:100%;max-width:380px}
+.card{
+  background:var(--surface);border:1px solid var(--hair);border-radius:2px;
+  padding:30px 28px 26px;
+  box-shadow:0 1px 0 var(--inset) inset, 0 28px 56px -36px rgba(15,22,31,.5);
+}
+.card h1{font-weight:400;font-size:30px;line-height:1.05;letter-spacing:.01em}
+.card .lede{font-family:var(--sans);font-size:14px;line-height:1.5;color:var(--muted);margin:8px 0 24px}
+.field{display:grid;gap:7px;margin-bottom:16px}
+.field label{font-family:var(--sans);font-size:13px;letter-spacing:.01em;color:var(--steel)}
+.input{
+  display:flex;align-items:center;height:46px;
+  background:var(--field);border:1px solid var(--hair);border-radius:2px;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.input:focus-within{border-color:var(--focus);box-shadow:0 0 0 3px var(--focus-ring)}
+.input input{flex:1;height:100%;border:0;outline:0;background:transparent;padding:0 14px;font:16px var(--sans);color:var(--ink)}
+.input input::placeholder{color:var(--ph)}
+.peek{height:44px;width:44px;flex:none;display:grid;place-items:center;background:none;border:0;cursor:pointer;color:var(--steel);border-radius:2px}
+.peek svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.peek:hover{color:var(--ink)}
+.peek:focus-visible{outline:1.5px solid var(--ink);outline-offset:-4px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:2px 0 22px;font-family:var(--sans);font-size:13px;color:var(--muted)}
+.row label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;min-height:32px}
+.row input{width:16px;height:16px;accent-color:var(--ink)}
+.row a{color:var(--steel);text-underline-offset:3px}
+.row a:hover{color:var(--ink)}
+.go{
+  width:100%;height:48px;border:0;border-radius:2px;cursor:pointer;
+  background:var(--btn);color:var(--btn-ink);
+  font:19px/1 var(--serif);letter-spacing:.04em;
+  box-shadow:0 0 0 1px rgba(15,22,31,.12), 0 10px 24px -16px rgba(0,0,0,.55);
+  transition:background-color .2s ease, transform .2s ease;
+}
+.go span{display:inline-block;padding-top:2px}
+.go:hover{background:var(--btn-hover);transform:translateY(-1px);box-shadow:0 0 0 1px rgba(15,22,31,.16), 0 14px 28px -16px rgba(0,0,0,.6)}
+.go:active{transform:none}
+.go:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
+.note{font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--muted);margin-top:14px;min-height:20px;text-align:center}
+.note.err{color:var(--err)}
+
+footer{max-width:640px;text-align:center;font-family:var(--sans);font-size:11.5px;line-height:1.65;letter-spacing:.01em;color:var(--muted)}
+footer p+p{margin-top:5px}
+
+@media (max-width:760px){
+  canvas#tess{width:min(150vw,720px);right:auto;left:50%;top:-4vh;transform:translateX(-50%);opacity:.55}
+}
+@media (max-width:520px){#modeLabel{display:none}.mode{top:8px;right:8px}}
+@media (max-width:420px){
+  body{padding:36px 14px 22px;gap:26px}
+  .lockup .name{font-size:42px}
+  .lockup .sub{font-size:10.85px}
+  .card{padding:26px 20px 22px}
+  footer{font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){body,.card,.go,.input,.mode .track,.mode .knob{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="tess" aria-hidden="true"></canvas>
+
+<button class="mode" id="mode" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+  <span id="modeLabel">Light</span>
+  <span class="track" aria-hidden="true"><span class="knob">
+    <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+    <svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+  </span></span>
+</button>
+
+<header>
+  <a class="lockup" href="#" aria-label="Tesseract, Grey Matter Wealth Strategies">
+    <span class="name" aria-hidden="true">TESSERACT</span>
+    <span class="rule" aria-hidden="true"></span>
+    <span class="sub" aria-hidden="true">GREY MATTER WEALTH STRATEGIES</span>
+  </a>
+</header>
+
+<main>
+  <form class="card" id="signin" novalidate>
+    <h1>Sign in</h1>
+    <p class="lede">Planning workspace for authorized users.</p>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <div class="input"><input id="email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="name@greymatterws.com" required></div>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="input">
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="peek" type="button" id="peek" aria-label="Show password" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label><input type="checkbox" id="keep"> Keep me signed in</label>
+      <a href="#" id="forgot">Forgot password?</a>
+    </div>
+
+    <button class="go" type="submit"><span>Log in</span></button>
+    <p class="note" id="note" role="status" aria-live="polite"></p>
+  </form>
+</main>
+
+<footer>
+  <p>Tesseract™ is a trademark of GM Wealth Strategies LLC, d/b/a Grey Matter Wealth Strategies. Access is limited to authorized users; activity may be logged.</p>
+  <p>Tesseract provides information and calculations for discussion purposes only. It is not tax, legal, accounting or investment advice. Consult a qualified professional about your own situation before acting on any result.</p>
+  <p>© 2026 GM Wealth Strategies LLC. All rights reserved.</p>
+</footer>
+
+<script>
+{
+  /* ---------- light / dark ---------- */
+  const root = document.documentElement;
+  const modeBtn = document.getElementById('mode');
+  const modeLabel = document.getElementById('modeLabel');
+  const setMode = dark => {
+    if (dark) root.dataset.mode = 'dark'; else delete root.dataset.mode;
+    modeBtn.setAttribute('aria-checked', String(dark));
+    modeLabel.textContent = dark ? 'Dark' : 'Light';
+  };
+  let saved = null;
+  try { saved = localStorage.getItem('tesseract-mode'); } catch (e) {}
+  setMode(saved === 'dark');
+  modeBtn.addEventListener('click', () => {
+    const dark = root.dataset.mode !== 'dark';
+    setMode(dark);
+    try { localStorage.setItem('tesseract-mode', dark ? 'dark' : 'light'); } catch (e) {}
+  });
+
+  /* ---------- sign-in (preview only) ---------- */
+  const form = document.getElementById('signin');
+  const note = document.getElementById('note');
+  const pw = document.getElementById('password');
+  const peek = document.getElementById('peek');
+  peek.addEventListener('click', () => {
+    const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    peek.setAttribute('aria-pressed', String(show));
+    peek.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('email');
+    note.className = 'note';
+    if (!email.value.trim() || !email.checkValidity()) { note.classList.add('err'); note.textContent = 'Enter a valid email address.'; email.focus(); return; }
+    if (!pw.value) { note.classList.add('err'); note.textContent = 'Enter your password.'; pw.focus(); return; }
+    note.textContent = 'Preview only. Sign-in isn’t connected yet.';
+  });
+  document.getElementById('forgot').addEventListener('click', e => {
+    e.preventDefault();
+    note.className = 'note';
+    note.textContent = 'Password resets aren’t connected in this preview.';
+  });
+
+  /* ---------- diamond → atoms → tesseract ---------- */
+  const cv = document.getElementById('tess');
+  const ctx = cv.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+  const size = () => {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  };
+  const ro = new ResizeObserver(() => { size(); if (reduce) requestAnimationFrame(frame); }); ro.observe(cv); size();
+
+  // seeded random so the shatter is the same every load
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+  // GMWS halftone diamond: 34×34 grid, rotated 45°, dots grow toward one corner
+  const N = 34, dots = [];
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const x = 10 + 20 * i, y = 10 + 20 * j, s = (x + y - 20) / 1320;
+    const X = (x - y) * Math.SQRT1_2 + 480.8, Y = (x + y) * Math.SQRT1_2;
+    dots.push({ dx: (X - 481) / 962, dy: (Y - 481) / 962, dr: (0.55 + 6.65 * s ** 1.6) / 962 });
+  }
+
+  // tesseract: 16 vertices, 32 edges
+  const V = [];
+  for (let k = 0; k < 16; k++) V.push([k & 1 ? 1 : -1, k & 2 ? 1 : -1, k & 4 ? 1 : -1, k & 8 ? 1 : -1]);
+  const E = [];
+  for (let a = 0; a < 16; a++) for (let b = a + 1; b < 16; b++) {
+    const d = a ^ b; if (d && !(d & (d - 1))) E.push([a, b]);
+  }
+
+  // give every dot a slot on an edge, shuffled so the atoms cross as they rebuild
+  const order = dots.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  const per = Math.ceil(dots.length / E.length);
+  order.forEach((di, k) => {
+    const d = dots[di], e = k % E.length, n = Math.floor(k / E.length);
+    d.edge = e; d.t = per > 1 ? n / (per - 1) : 0;
+    const ang = Math.atan2(d.dy, d.dx) + (rnd() - .5) * 1.4, push = .16 + rnd() * .34;
+    d.sx = d.dx + Math.cos(ang) * push; d.sy = d.dy + Math.sin(ang) * push;
+    d.ph = rnd() * Math.PI * 2; d.f = .6 + rnd() * .9;
+  });
+
+  const rot = (p, i, j, a) => { const c = Math.cos(a), s = Math.sin(a), u = p[i], v = p[j]; p[i] = u * c - v * s; p[j] = u * s + v * c; };
+  const project = time => V.map(v => {
+    const p = v.slice();
+    rot(p, 0, 3, time * .31);           // x–w: the inside-out turn
+    rot(p, 1, 2, time * .17 + .6);      // y–z
+    rot(p, 2, 3, time * .11);           // z–w
+    rot(p, 0, 2, .42);                  // fixed tilt so it never sits flat
+    const k4 = 3.6 / (3.6 - p[3]);
+    const x = p[0] * k4, y = p[1] * k4, z = p[2] * k4;
+    const k3 = 5 / (5 - z);
+    return { x: x * k3, y: y * k3, d: (z + p[3]) / 4 };   // d ≈ −1 far … +1 near
+  });
+
+  const ease = t => t <= 0 ? 0 : t >= 1 ? 1 : t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+  const clamp = t => Math.max(0, Math.min(1, t));
+  const T_FADE = .9, T_SPLIT = 1.6, T_SCATTER = 3.1, T_BUILD = 3.5, T_DONE = 6.2;
+  let t0 = null;
+
+  const frame = now => {
+    if (t0 === null) t0 = now;
+    const T = reduce ? 40 : (now - t0) / 1000;
+    const rgb = root.dataset.mode === 'dark' ? '236,234,231' : '15,22,31';
+    const S = Math.min(W, H);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+
+    const D = S * .62;                         // diamond display size
+    const scale = S * .148;                    // tesseract unit
+    const P = project(Math.max(0, T - T_BUILD) + 1.2);
+    const fade = clamp(T / T_FADE);
+    const split = ease(clamp((T - T_SPLIT) / (T_SCATTER - T_SPLIT)));
+    const build = ease(clamp((T - T_BUILD) / (T_DONE - T_BUILD)));
+
+    // faint edges once the shape has formed
+    const lines = clamp((T - (T_DONE - .8)) / 1.4);
+    if (lines > 0) {
+      ctx.lineWidth = 1;
+      for (const [a, b] of E) {
+        const A = P[a], B = P[b], depth = (A.d + B.d) / 2;
+        ctx.strokeStyle = `rgba(${rgb},${(.05 + .07 * (depth + 1) / 2) * lines})`;
+        ctx.beginPath(); ctx.moveTo(cx + A.x * scale, cy + A.y * scale); ctx.lineTo(cx + B.x * scale, cy + B.y * scale); ctx.stroke();
+      }
+    }
+
+    for (const d of dots) {
+      // diamond and scattered "atom" states
+      const drift = split * (1 - build) * .012;
+      const sx = d.sx + Math.cos(T * d.f + d.ph) * drift, sy = d.sy + Math.sin(T * d.f * 1.3 + d.ph) * drift;
+      let x = (d.dx + (sx - d.dx) * split) * D, y = (d.dy + (sy - d.dy) * split) * D;
+      let r = d.dr * D + (S * .0032 - d.dr * D) * split;
+      let a = (.62 + .25 * (d.dr / .0077)) * fade;
+      a = a + (.5 - a) * split;
+      if (build > 0) {
+        const [ia, ib] = E[d.edge], A = P[ia], B = P[ib];
+        const tx = (A.x + (B.x - A.x) * d.t) * scale, ty = (A.y + (B.y - A.y) * d.t) * scale;
+        const depth = A.d + (B.d - A.d) * d.t, q = (depth + 1) / 2;
+        x += (tx - x) * build; y += (ty - y) * build;
+        r += (S * (.0018 + .0034 * q) - r) * build;
+        a += ((.28 + .6 * q) - a) * build;
+      }
+      if (r < .25 || a <= 0) continue;
+      ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(cx + x, cy + y, r, 0, 6.2832); ctx.fill();
+    }
+    if (!reduce) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>
