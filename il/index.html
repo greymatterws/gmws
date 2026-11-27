@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interlink · Grey Matter Wealth Strategies</title>
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0F161F">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<script>
+  /* ================= SETTINGS — the only part you edit ================= */
+  window.INTERLINK = {
+    // The address your browser shows when you are inside the Interlink SharePoint site.
+    siteUrl: "PASTE-INTERLINK-SHAREPOINT-ADDRESS-HERE",
+
+    // Your Microsoft 365 domain. Leave as is.
+    tenant: "greymatterws.com",
+
+    // "Application (client) ID" of the "Interlink Sign-in" app registration (see README).
+    // Leave empty and the page still works; clients just type their email again on Microsoft's screen.
+    clientId: "",
+
+    // The exact web address of this page. Must match the app registration's Redirect URI.
+    redirectUri: "https://greymatterws.com/il/",
+
+    // Where "Forgot password?" goes.
+    resetUrl: "https://passwordreset.microsoftonline.com/",
+
+    helpEmail: "info@greymatterws.com"
+  };
+  /* ===================================================================== */
+</script>
+<style>
+  :root {
+    --ink: #0F161F;
+    --ink-deep: #090E14;
+    --ink-lift: #18222E;
+    --white: #FFFFFF;
+    --paper: #C7C7C5;
+    --paper-hover: #D3D3D1;
+    --steel: #5B6573;
+    --mist: rgba(236, 234, 231, .62);
+    --faint: rgba(236, 234, 231, .46);
+    --line: rgba(255, 255, 255, .16);
+    --sans: -apple-system, "Segoe UI", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background:
+      radial-gradient(120% 90% at 50% 38%, var(--ink-lift) 0%, var(--ink) 48%, var(--ink-deep) 100%);
+    color: var(--white);
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    justify-items: center;
+    padding: max(22px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* The halftone diamond from the mark, enlarged into a single quiet shape */
+  .field {
+    position: fixed;
+    pointer-events: none;
+    width: min(132vh, 1150px);
+    aspect-ratio: 1;
+    right: -24vh;
+    top: 50%;
+    transform: translateY(-50%);
+    background: url("assets/halftone-diamond.svg") center / contain no-repeat;
+    opacity: .075;
+    animation: settle 1.8s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes settle {
+    from { opacity: 0; transform: translateY(-50%) scale(1.04); }
+    to   { opacity: .075; transform: translateY(-50%) scale(1); }
+  }
+  @media (max-width: 760px) {
+    .field { width: 150vw; right: -62vw; top: 4%; transform: none; animation-name: settle-m; }
+    @keyframes settle-m { from { opacity: 0; } to { opacity: .075; } }
+  }
+
+  header {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-family: var(--sans);
+  }
+  /* Own, permanent layer so the logo isn't re-rasterized when buttons animate */
+  .logo-link { display: block; }
+  .logo { width: min(232px, 62vw); height: auto; display: block; transform: translateZ(0); backface-visibility: hidden; }
+  .back {
+    color: var(--faint);
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: color .2s ease;
+  }
+  .back:hover { color: var(--white); }
+  .back svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+  main {
+    align-self: center;
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 0 12px;
+  }
+  .wordmark { width: min(132px, 40vw); height: auto; display: block; margin: 0 0 30px; opacity: .92; transform: translateZ(0); backface-visibility: hidden; }
+
+  /* Hairline with a small diamond, tying the GMWS mark to INTERLINK */
+  .rule {
+    width: min(168px, 50vw);
+    height: 7px;
+    margin: 20px 0 17px;
+    display: grid;
+    grid-template-columns: 1fr 7px 1fr;
+    align-items: center;
+    gap: 9px;
+  }
+  .rule::before, .rule::after { content: ""; height: 1px; }
+  .rule::before { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.42)); }
+  .rule::after  { background: linear-gradient(90deg, rgba(255,255,255,.42), rgba(255,255,255,0)); }
+  .rule i { width: 5px; height: 5px; justify-self: center; background: rgba(255,255,255,.7); transform: rotate(45deg); }
+
+  .sub { font-family: var(--sans); font-size: 13.5px; line-height: 1.5; color: var(--mist); text-align: center; }
+
+  form { width: 100%; margin-top: 30px; display: grid; gap: 18px; }
+  label.field-label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 8px;
+  }
+  input[type="email"] {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, .035);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 15px;
+    letter-spacing: .01em;
+    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  }
+  input[type="email"]::placeholder { color: rgba(236, 234, 231, .32); }
+  input[type="email"]:hover { border-color: rgba(255, 255, 255, .26); }
+  input[type="email"]:focus { outline: none; border-color: rgba(255, 255, 255, .6); background: rgba(255, 255, 255, .055); box-shadow: 0 0 0 3px rgba(255, 255, 255, .06); }
+  input[type="email"][aria-invalid="true"] { border-color: rgba(236, 160, 150, .75); }
+  input:-webkit-autofill { -webkit-text-fill-color: var(--white); -webkit-box-shadow: 0 0 0 40px #141d28 inset; caret-color: var(--white); }
+
+  .row {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    font-family: var(--sans); font-size: 12.5px; color: var(--mist);
+  }
+  .check { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; }
+  .check input { appearance: none; -webkit-appearance: none; width: 15px; height: 15px; border: 1px solid rgba(255,255,255,.3); border-radius: 2px; background: transparent; display: grid; place-content: center; cursor: pointer; transition: border-color .2s ease, background-color .2s ease; }
+  .check input::after { content: ""; width: 8px; height: 4px; border-left: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); transform: rotate(-45deg) translate(1px, -1px); opacity: 0; }
+  .check input:checked { background: var(--paper); border-color: var(--paper); }
+  .check input:checked::after { opacity: 1; }
+  .check input:focus-visible { outline: 1.5px solid var(--white); outline-offset: 3px; }
+
+  a.link { color: var(--mist); text-decoration: none; border-bottom: 1px solid rgba(236,234,231,.22); padding-bottom: 1px; transition: color .2s ease, border-color .2s ease; }
+  a.link:hover { color: var(--white); border-color: rgba(255,255,255,.6); }
+  a.link:focus-visible { outline: 1.5px solid var(--white); outline-offset: 3px; }
+
+  .btn {
+    margin-top: 6px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 16px 1fr 16px;
+    align-items: center;
+    height: 46px;
+    padding: 0 16px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 0;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 19px;
+    line-height: 1;
+    letter-spacing: .04em;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 10px 24px -16px rgba(0,0,0,.75);
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    will-change: transform;
+  }
+  .btn span { text-align: center; padding-top: 2px; }
+  .btn svg { width: 15px; height: 15px; stroke: var(--steel); fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s ease, transform .2s ease; }
+  .btn:hover { background: var(--paper-hover); transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 14px 28px -16px rgba(0,0,0,.8); }
+  .btn:hover svg { stroke: var(--ink); transform: translateX(2px); }
+  .btn:active { transform: translateY(0); }
+  .btn:focus-visible { outline: 1.5px solid var(--white); outline-offset: 5px; }
+  .btn[disabled] { cursor: progress; background: var(--paper-hover); }
+
+  .msg {
+    display: none;
+    font-family: var(--sans); font-size: 12.5px; line-height: 1.5;
+    color: #F1D3CE;
+    background: rgba(200, 90, 80, .12);
+    border: 1px solid rgba(220, 120, 110, .35);
+    border-radius: 2px;
+    padding: 10px 12px;
+  }
+  .msg.show { display: block; }
+
+  .assure {
+    margin-top: 26px;
+    display: flex; gap: 10px; align-items: flex-start;
+    font-family: var(--sans); font-size: 12px; line-height: 1.55; color: var(--faint);
+  }
+  .assure svg { flex: 0 0 13px; width: 13px; height: 13px; margin-top: 2px; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+  .help { margin-top: 14px; font-family: var(--sans); font-size: 12px; color: var(--faint); text-align: center; }
+
+  footer {
+    position: relative;
+    max-width: 620px;
+    margin-top: 40px;
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    line-height: 1.65;
+    letter-spacing: .01em;
+    color: var(--faint);
+  }
+  footer p + p { margin-top: 6px; }
+
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 420px) {
+    footer { font-size: 11px; margin-top: 32px; }
+    .wordmark { margin: 0 0 26px; }
+    .rule { margin: 18px 0 15px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .field { animation: none; }
+    .btn, .btn svg, input { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="field" aria-hidden="true"></div>
+
+  <header>
+    <a class="back" href="https://greymatterws.com/cp/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      Client Portal
+    </a>
+  </header>
+
+  <main>
+    <a class="logo-link" href="https://greymatterws.com">
+      <img class="logo" src="assets/gmws-logo-white.png" width="706" height="200" alt="Grey Matter Wealth Strategies">
+    </a>
+    <div class="rule" aria-hidden="true"><i></i></div>
+    <img class="wordmark" src="assets/interlink-wordmark.svg" width="4515" height="864" alt="Interlink">
+
+    <p class="sub">Your secure document portal at GMWS.</p>
+
+    <form id="signin" novalidate>
+      <div class="msg" id="msg" role="alert"></div>
+
+      <div>
+        <label class="field-label" for="email">Email</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="name@example.com" required>
+      </div>
+
+      <div class="row">
+        <label class="check"><input type="checkbox" id="remember"> Remember my email</label>
+        <a class="link" id="forgot" href="https://passwordreset.microsoftonline.com/">Forgot password?</a>
+      </div>
+
+      <button class="btn" type="submit" id="go">
+        <i aria-hidden="true"></i>
+        <span id="go-label">Continue</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+
+    <p class="assure">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <span>You'll confirm your password and verification code on Microsoft's secure sign-in page. GMWS never sees your password.</span>
+    </p>
+    <p class="help">Need help? <a class="link" id="help" href="mailto:info@greymatterws.com">info@greymatterws.com</a></p>
+  </main>
+
+  <footer>
+    <p>Interlink™ is a trademark of GM Wealth Strategies LLC, d/b/a Grey Matter Wealth Strategies, and is the firm's secure client document portal. Access is limited to authorized clients; activity may be logged.</p>
+    <p>© 2026 GM Wealth Strategies LLC. All rights reserved.</p>
+  </footer>
+
+<script>
+(function () {
+  "use strict";
+  var C = window.INTERLINK || {};
+  var KEY_EMAIL = "interlink.email";
+  var KEY_FLOW  = "interlink.flow";
+
+  var form = document.getElementById("signin");
+  var email = document.getElementById("email");
+  var remember = document.getElementById("remember");
+  var forgot = document.getElementById("forgot");
+  var msg = document.getElementById("msg");
+  var go = document.getElementById("go");
+  var goLabel = document.getElementById("go-label");
+  var help = document.getElementById("help");
+
+  function store(kind) { try { return window[kind]; } catch (e) { return null; } }
+  function get(kind, k) { var s = store(kind); try { return s ? s.getItem(k) : null; } catch (e) { return null; } }
+  function put(kind, k, v) { var s = store(kind); try { if (s) s.setItem(k, v); } catch (e) {} }
+  function del(kind, k) { var s = store(kind); try { if (s) s.removeItem(k); } catch (e) {} }
+
+  var siteReady = /^https:\/\/[^\s]+$/i.test(C.siteUrl || "");
+
+  if (C.helpEmail) { help.href = "mailto:" + C.helpEmail; help.textContent = C.helpEmail; }
+  if (C.resetUrl) forgot.href = C.resetUrl;
+
+  function show(text) { msg.textContent = text; msg.classList.add("show"); }
+  function clear() { msg.textContent = ""; msg.classList.remove("show"); }
+  function busy(on) { go.disabled = on; goLabel.textContent = on ? "Opening secure sign-in…" : "Continue"; }
+
+  /* ---- Coming back from Microsoft ---- */
+  function readReturn() {
+    var raw = (location.hash || "").replace(/^#/, "");
+    if (!raw) return false;
+    var p = new URLSearchParams(raw);
+    if (!p.has("state") && !p.has("error")) return false;
+    history.replaceState(null, "", location.pathname + location.search);   // drop the code from the address bar
+    var saved = null;
+    try { saved = JSON.parse(get("sessionStorage", KEY_FLOW) || "null"); } catch (e) {}
+    del("sessionStorage", KEY_FLOW);
+
+    if (p.has("error")) {
+      var err = p.get("error");
+      var desc = p.get("error_description") || "";
+      if (err === "access_denied" && /AADSTS65004|declined/i.test(desc)) {
+        show("Sign-in was cancelled. Enter your email to try again.");
+      } else if (/AADSTS50020|AADSTS500200/.test(desc)) {
+        show("That email isn't set up for Interlink yet. Contact " + (C.helpEmail || "us") + " for access.");
+      } else {
+        show("We couldn't complete sign-in. Please try again, or contact " + (C.helpEmail || "us") + ".");
+      }
+      if (saved && saved.email) email.value = saved.email;
+      return true;
+    }
+    if (saved && p.get("state") === saved.state && siteReady) {
+      busy(true); goLabel.textContent = "Opening Interlink…";
+      location.replace(C.siteUrl);
+      return true;
+    }
+    show("Your sign-in link expired. Enter your email to continue.");
+    return true;
+  }
+
+  /* ---- PKCE helpers (lets the app registration be Web or Single-page) ---- */
+  function rand(n) {
+    var a = new Uint8Array(n); (window.crypto || window.msCrypto).getRandomValues(a);
+    return b64url(a);
+  }
+  function b64url(bytes) {
+    var s = ""; for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function challenge(verifier) {
+    if (!window.crypto || !crypto.subtle) return Promise.resolve(null);
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))
+      .then(function (h) { return b64url(new Uint8Array(h)); })
+      .catch(function () { return null; });
+  }
+
+  function authorizeUrl(addr, state, codeChallenge) {
+    var q = new URLSearchParams({
+      client_id: C.clientId,
+      response_type: "code",
+      response_mode: "fragment",
+      redirect_uri: C.redirectUri,
+      scope: "openid",
+      state: state,
+      login_hint: addr
+    });
+    if (codeChallenge) { q.set("code_challenge", codeChallenge); q.set("code_challenge_method", "S256"); }
+    return "https://login.microsoftonline.com/" + encodeURIComponent(C.tenant || "organizations") + "/oauth2/v2.0/authorize?" + q.toString();
+  }
+
+  /* ---- Page start ---- */
+  var returning = readReturn();
+  var savedEmail = get("localStorage", KEY_EMAIL);
+  if (savedEmail && !email.value) { email.value = savedEmail; remember.checked = true; }
+  if (!returning) { (email.value ? go : email).focus({ preventScroll: true }); }
+
+  email.addEventListener("input", function () { email.removeAttribute("aria-invalid"); clear(); });
+
+  forgot.addEventListener("click", function () {
+    var v = email.value.trim();
+    if (v && C.resetUrl) forgot.href = C.resetUrl + (C.resetUrl.indexOf("?") < 0 ? "?" : "&") + "username=" + encodeURIComponent(v);
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    clear();
+    var v = email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+      email.setAttribute("aria-invalid", "true");
+      show("Enter the email address you use for Interlink.");
+      email.focus();
+      return;
+    }
+    if (!siteReady) { show("Interlink isn't connected yet. Contact " + (C.helpEmail || "us") + "."); return; }
+
+    if (remember.checked) put("localStorage", KEY_EMAIL, v); else del("localStorage", KEY_EMAIL);
+    busy(true);
+
+    if (!C.clientId) { location.assign(C.siteUrl); return; }   // works without the app registration; Microsoft asks for the email again
+
+    var state = rand(16), verifier = rand(48);
+    put("sessionStorage", KEY_FLOW, JSON.stringify({ state: state, email: v, t: Date.now() }));
+    challenge(verifier).then(function (cc) { location.assign(authorizeUrl(v, state, cc)); });
+  });
+
+  window.addEventListener("pageshow", function (e) { if (e.persisted) busy(false); });
+})();
+</script>
+</body>
+</html>
