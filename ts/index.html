@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tesseract · Sign in</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#D7D6D3">
+<link rel="icon" type="image/png" sizes="32x32" href="/cp/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/cp/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
@@ -34,6 +38,7 @@ LAYOUT: lockup on top, sign-in card in the centre, the animation floating right 
   --focus-ring: rgba(15,22,31,.07);
   --ph: #71767D;
   --err: #7A2E2E;
+  --faint: #565B62;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
 }
@@ -57,8 +62,20 @@ LAYOUT: lockup on top, sign-in card in the centre, the animation floating right 
   --focus-ring: rgba(236,234,231,.06);
   --ph: #7D848D;
   --err: #E3A7A7;
+  --faint: rgba(236,234,231,.46);
 }
 body,.card,.input,.go{transition:background-color .35s ease, color .35s ease, border-color .35s ease}
+
+/* Back to Client Portal, upper left (same as Interlink) */
+.back{
+  position:fixed;z-index:2;top:7px;left:18px;min-height:44px;padding:0 6px;
+  display:inline-flex;align-items:center;gap:7px;
+  font:12px -apple-system, "Segoe UI", Arial, sans-serif;letter-spacing:.06em;
+  color:var(--faint);text-decoration:none;transition:color .2s;
+}
+.back:hover{color:var(--ink)}
+.back:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px;border-radius:2px}
+.back svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 
 /* Mode switch, upper right */
 .mode{
@@ -153,12 +170,13 @@ footer p+p{margin-top:5px}
 @media (max-width:760px){
   canvas#tess{width:min(150vw,720px);right:auto;left:50%;top:-4vh;transform:translateX(-50%);opacity:.55}
 }
-@media (max-width:520px){#modeLabel{display:none}.mode{top:8px;right:8px}}
+@media (max-width:520px){#modeLabel{display:none}.mode{top:8px;right:8px}.back{top:8px;left:8px}body{padding-top:62px}}
 @media (max-width:420px){
   body{padding:36px 14px 22px;gap:26px}
   .lockup .name{font-size:42px}
   .lockup .sub{font-size:10.85px}
   .card{padding:26px 20px 22px}
+  body{padding-top:62px}
   footer{font-size:11px}
 }
 @media (prefers-reduced-motion:reduce){body,.card,.go,.input,.mode .track,.mode .knob{transition:none}}
@@ -166,6 +184,11 @@ footer p+p{margin-top:5px}
 </head>
 <body>
 <canvas id="tess" aria-hidden="true"></canvas>
+
+<a class="back" href="https://greymatterws.com/cp/">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  Client Portal
+</a>
 
 <button class="mode" id="mode" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
   <span id="modeLabel">Light</span>
@@ -176,7 +199,7 @@ footer p+p{margin-top:5px}
 </button>
 
 <header>
-  <a class="lockup" href="#" aria-label="Tesseract, Grey Matter Wealth Strategies">
+  <a class="lockup" href="https://greymatterws.com/cp/" aria-label="Tesseract, Grey Matter Wealth Strategies — back to Client Portal">
     <span class="name" aria-hidden="true">TESSERACT</span>
     <span class="rule" aria-hidden="true"></span>
     <span class="sub" aria-hidden="true">GREY MATTER WEALTH STRATEGIES</span>
