@@ -100,6 +100,10 @@
   .btn:hover svg { stroke: var(--ink); }
   .btn:active { transform: translateY(0); }
   .btn:focus-visible { outline: 1.5px solid var(--white); outline-offset: 5px; }
+  /* Taxes: no destination for now — same look, no hover or pointer */
+  .btn:not([href]) { cursor: default; }
+  .btn:not([href]):hover { background: var(--paper); transform: none; box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 10px 24px -16px rgba(0,0,0,.75); }
+  .btn:not([href]):hover svg { stroke: var(--steel); }
 
   footer {
     position: relative;
@@ -142,16 +146,21 @@
         <span>Documents</span>
         <i aria-hidden="true"></i>
       </a>
-      <a class="btn" href="https://tax.greymatterws.com">
+      <a class="btn" aria-disabled="true">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-7 7"/><circle cx="9" cy="9" r="1.3"/><circle cx="15" cy="15" r="1.3"/></svg>
         <span>Taxes</span>
+        <i aria-hidden="true"></i>
+      </a>
+      <a class="btn" href="https://greymatterws.com/ts/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17"/><rect x="8.5" y="8.5" width="7" height="7"/><path d="M3.5 3.5l5 5M20.5 3.5l-5 5M20.5 20.5l-5-5M3.5 20.5l5-5"/></svg>
+        <span>Planning</span>
         <i aria-hidden="true"></i>
       </a>
     </nav>
   </main>
   <footer>
     <p>Investment advisory services are offered through GM Wealth Strategies LLC, d/b/a Grey Matter Wealth Strategies, a registered investment adviser. Registration does not imply a certain level of skill or training.</p>
-    <p>Brokerage and custody services are provided by Altruist Financial LLC, member FINRA/SIPC, which is not affiliated with Grey Matter Wealth Strategies. Investments opens Altruist’s secure website; Documents opens our secure client file portal.</p>
+    <p>Brokerage and custody services are provided by Altruist Financial LLC, member FINRA/SIPC, which is not affiliated with Grey Matter Wealth Strategies. Investments opens Altruist’s secure website; Documents opens our secure client file portal; Planning opens Tesseract, our planning workspace.</p>
     <p>© 2026 GM Wealth Strategies LLC. All rights reserved.</p>
   </footer>
 </body>
